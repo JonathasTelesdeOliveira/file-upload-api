@@ -26,5 +26,3 @@ public class TransacaoKafkaDTO {
     private BigDecimal valorBrl;
     private LocalDateTime dataSpedUSDTBRL;
 }
-
-

@@ -2,25 +2,24 @@ package transaction_input_api.jhonatanTeles.busines;
 
 
 import com.alibaba.excel.EasyExcel;
-
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import transaction_input_api.jhonatanTeles.convert.Excelconvert;
 import transaction_input_api.jhonatanTeles.dto.TransacaoKafkaDTO;
 import transaction_input_api.jhonatanTeles.dto.in.ExelTradeSpotBinanceIN;
 import transaction_input_api.jhonatanTeles.exeptions.ConflictExeption;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
-
 @Service
-public class UploadFilesService {
+public class UploadExelFilesService {
     private final Excelconvert excelconvert;
     TransactionService transactionService;
 
-    public UploadFilesService(Excelconvert excelconvert,
-                              TransactionService transactionService) {
+    public UploadExelFilesService(Excelconvert excelconvert,
+                                  TransactionService transactionService) {
         this.excelconvert = excelconvert;
         this.transactionService = transactionService;
     }

@@ -15,7 +15,6 @@ public class TransactionService {
     private final KafkaTemplate<String, List<TransacaoKafkaDTO>> kafkaTemplate;
     @Autowired
     public TransactionService(KafkaTemplate<String, List<TransacaoKafkaDTO>> kafkaTemplate) {
-
         this.kafkaTemplate = kafkaTemplate;
     }
 
