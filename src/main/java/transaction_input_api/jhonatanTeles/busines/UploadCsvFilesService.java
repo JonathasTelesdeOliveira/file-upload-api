@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import transaction_input_api.jhonatanTeles.convert.Csvconvert;
 import transaction_input_api.jhonatanTeles.dto.TransacaoKafkaDTO;
 import transaction_input_api.jhonatanTeles.dto.in.CsvTradeSpotBinanceIN;
-import transaction_input_api.jhonatanTeles.exeptions.ConflictExeption;
+import transaction_input_api.jhonatanTeles.exeptions.ConflictException;
 
 import java.io.*;
 import java.util.List;
@@ -25,10 +25,9 @@ public class UploadCsvFilesService {
         this.transactionService = transactionService;
     }
 
-    public List<TransacaoKafkaDTO> uploadCSVFile(MultipartFile file, Model model) {
+    public void uploadCSVFile(MultipartFile file, Model model) {
         if (file.isEmpty()) {
-            throw new RuntimeException("Erro file.isEmpty()  ao upload CSV file" + false);
-        }
+            throw new ConflictException("O arquivo CSV enviado está vazio ou ausente.");        }
 
         try (InputStream inputStream = file.getInputStream();
              BOMInputStream bomInputStream = BOMInputStream.builder()
@@ -43,23 +42,17 @@ public class UploadCsvFilesService {
                     .build();
 
             List<CsvTradeSpotBinanceIN> csvIn = csvToBean.parse();
-            if (csvIn.isEmpty()){throw new ConflictExeption("Dados inesistente: Dodos file csvIn.isEmpty()");}
+            if (csvIn.isEmpty()){
+                throw new ConflictException("Dados inexistentes: o arquivo CSV está vazio.");
+            }
             List<TransacaoKafkaDTO> tradeSpotCsv = csvconvert.in_p_transacaoKafkaDTOList(csvIn);
-            if (tradeSpotCsv == null || tradeSpotCsv.isEmpty()){throw new ConflictExeption("Erro na conversão tradeSpotCsv.isEmpty()");}
+            if (tradeSpotCsv == null || tradeSpotCsv.isEmpty()){
+                throw new ConflictException("Erro na conversão dos dados do CSV.");
+            }
             transactionService.updadeTransaction(tradeSpotCsv);
-            return tradeSpotCsv;
         } catch (IOException e) {
             String causa = (e.getCause() != null) ? e.getCause().getMessage() : "Sem causa raiz";
-            throw new ConflictExeption("Erro ao tentar ler carteira: " + e.getMessage() + " | Causa: " + causa);
+            throw new ConflictException("Erro ao tentar ler arquivo CSV: " + e.getMessage() + " | Causa: " + causa);
         }
     }
 }
-
-
-
-
-
-
-
-
-

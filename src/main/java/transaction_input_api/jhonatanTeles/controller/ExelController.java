@@ -27,12 +27,15 @@ public class ExelController {
 
 
     @PostMapping(value = "/Enviar-Exel", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "Inserir", description = "Ler aquivo Xlsx || Csv")
-    @ApiResponse(responseCode = "200", description = "leitura com sucesso!")
-    @ApiResponse(responseCode = "400", description = "erro de requisisão.")
-    @ApiResponse(responseCode = "401", description = "arquivo não enviado")
-    public ResponseEntity<List<TransacaoKafkaDTO>> UploadExcelFile(@RequestParam("file") MultipartFile file) {
-        return ResponseEntity.ok(uploadService.uploadExelFile(file));
+    @Operation(summary = "Inserir Excel", description = "Lê arquivo Exel ou XLSX de transações da Binance e envia para o Kafka")
+    @ApiResponse(responseCode = "200", description = "Arquivo Excel recebido e encaminhado com sucesso!")
+    @ApiResponse(responseCode = "400", description = "Arquivo vazio, com formato incorreto ou extensão inválida.")
+    @ApiResponse(responseCode = "413", description = "O arquivo excede o tamanho máximo permitido.")
+    @ApiResponse(responseCode = "503", description = "Serviço de mensageria (Kafka) indisponível.")
+    @ApiResponse(responseCode = "500", description = "Erro interno ao processar o arquivo Excel.")
+    public ResponseEntity<String> UploadExcelFile(@RequestParam("file") MultipartFile file) {
+        uploadService.uploadExelFile(file);
+        return ResponseEntity.ok("Arquivo CSV recebido e encaminhado com sucesso.");
     }
 }
 

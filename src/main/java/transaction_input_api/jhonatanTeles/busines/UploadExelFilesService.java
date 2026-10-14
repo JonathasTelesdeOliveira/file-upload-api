@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import transaction_input_api.jhonatanTeles.convert.Excelconvert;
 import transaction_input_api.jhonatanTeles.dto.TransacaoKafkaDTO;
 import transaction_input_api.jhonatanTeles.dto.in.ExelTradeSpotBinanceIN;
-import transaction_input_api.jhonatanTeles.exeptions.ConflictExeption;
+import transaction_input_api.jhonatanTeles.exeptions.ConflictException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,7 +37,7 @@ public class UploadExelFilesService {
         return validExtension && validContentType;
     }
 
-    public List<TransacaoKafkaDTO> uploadExelFile(MultipartFile file) {
+    public void uploadExelFile(MultipartFile file) {
         if (file == null || file.isEmpty()) {
             throw new IllegalArgumentException("Erro ao carregar o arquivo Excel/XLS: o arquivo está vazio ou ausente.");}
         String filename = file.getOriginalFilename();
@@ -63,13 +63,11 @@ public class UploadExelFilesService {
                 throw new RuntimeException("Erro ao Converter o arquivo Excel/XLS: o arquivo está vazio ou ausente.");
             }
             transactionService.updadeTransaction(tList);
-            return tList;
         }  catch (IOException e) {
         String causa = (e.getCause() != null) ? e.getCause().getMessage() : "Sem causa raiz";
-        throw new ConflictExeption("Erro ao tentar ler carteira: " + e.getMessage() + " | Causa: " + causa);
+        throw new ConflictException("Erro ao tentar ler carteira: " + e.getMessage() + " | Causa: " + causa);
         } catch (Exception e) {
-            e.printStackTrace();
-        throw new ConflictExeption("Erro ao tentar ler o arquivo de carteira: "+ e.getMessage());
+        throw new ConflictException("Erro ao tentar ler o arquivo de carteira: "+ e.getMessage());
         }
     }
 }
